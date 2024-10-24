@@ -14,6 +14,8 @@ namespace UserAuthentication.Models
         public string Email { get; set; }
         [Required, MaxLength(50)]
         public string Password { get; set; }
+        [Required, MaxLength(50)]
+        public string PhoneNumber { get; set; }
         //[Required, MaxLength(50)]
         //public string Role { get; set; }
     }

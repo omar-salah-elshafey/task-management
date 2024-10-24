@@ -110,6 +110,8 @@ namespace UserAuthentication.Services
             }
             // Revoke the refresh token
             refreshToken.RevokedOn = DateTime.UtcNow.ToLocalTime();
+            user.IsActive = false;
+            await _userManager.UpdateAsync(user);
 
             // Update user with revoked token
             var result = await _userManager.UpdateAsync(user);

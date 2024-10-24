@@ -2,7 +2,7 @@
 
 namespace UserAuthentication.Models
 {
-    public class UpdateUserModel
+    public class UpdateUserDTO
     {
         [Required]
         public string UserName { get; set; }
@@ -10,7 +10,6 @@ namespace UserAuthentication.Models
         public string FirstName { get; set; }
         [Required, MaxLength(50)]
         public string LastName { get; set; }
-        public string? Message { get; set; }
         public string? ProfileImageUrl { get; set; }
     }
 }

@@ -51,7 +51,7 @@ namespace UserAuthentication.Email
             var result = await _userManager.ConfirmEmailAsync(user, confirmEmail.Token);
             if (!result.Succeeded)
                 return new AuthModel { IsConfirmed = false, Message = "Token is not valid!" };
-
+            user.IsActive = true;
             return new AuthModel { IsConfirmed = true, Message = "Your Email has been confirmed successfully :) " };
         }
 

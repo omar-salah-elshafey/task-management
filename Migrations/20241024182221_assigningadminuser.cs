@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace UserAuthentication.Migrations
 {
     /// <inheritdoc />
-    public partial class assigningAdmintoOmar : Migration
+    public partial class assigningadminuser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +16,7 @@ namespace UserAuthentication.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "cdeb4fb0-2c1a-45d8-b768-bd517baf4d95", "65fe8fe3-9e08-418b-9d15-a7fa2853b2a5" });
+                values: new object[] { "04ac9c2b-5219-4a4f-9466-cd367d18cbf5", "f7f134cd-0c6c-46f8-80bf-dab0a7820b4c" });
         }
 
         /// <inheritdoc />
@@ -24,7 +25,8 @@ namespace UserAuthentication.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "cdeb4fb0-2c1a-45d8-b768-bd517baf4d95", "65fe8fe3-9e08-418b-9d15-a7fa2853b2a5" });
-}
+                keyValues: new object[] { "04ac9c2b-5219-4a4f-9466-cd367d18cbf5", "f7f134cd-0c6c-46f8-80bf-dab0a7820b4c" });
+
+        }
     }
 }

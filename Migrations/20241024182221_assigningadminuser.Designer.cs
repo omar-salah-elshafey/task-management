@@ -12,8 +12,8 @@ using UserAuthentication.Models;
 namespace UserAuthentication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241023114524_AddingRefreshToken")]
-    partial class AddingRefreshToken
+    [Migration("20241024182221_assigningadminuser")]
+    partial class assigningadminuser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,8 +141,8 @@ namespace UserAuthentication.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "65fe8fe3-9e08-418b-9d15-a7fa2853b2a5",
-                            RoleId = "cdeb4fb0-2c1a-45d8-b768-bd517baf4d95"
+                            UserId = "f7f134cd-0c6c-46f8-80bf-dab0a7820b4c",
+                            RoleId = "04ac9c2b-5219-4a4f-9466-cd367d18cbf5"
                         });
                 });
 
@@ -177,6 +177,9 @@ namespace UserAuthentication.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -188,6 +191,9 @@ namespace UserAuthentication.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -216,6 +222,9 @@ namespace UserAuthentication.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

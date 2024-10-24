@@ -58,7 +58,7 @@ namespace UserAuthentication.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _authService.LoginAsync(model);
-
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
 
@@ -66,7 +66,8 @@ namespace UserAuthentication.Controllers
             {
                 SetRefreshTokenCookie(result.RefreshToken, result.RefreshTokenExpiresOn);
             }
-
+            SetUserIdCookie(user.Id);
+            SetUserNameCookie(user.UserName);
             return Ok(result.Token);
         }
         
@@ -146,21 +147,25 @@ namespace UserAuthentication.Controllers
         public async Task<IActionResult> Logout()
         {
             var refreshToken = Request.Cookies["refreshToken"];
+            var userId = Request.Cookies["userId"];
+            var userName = Request.Cookies["UserName"];
             var result = await _authService.LogoutAsync(refreshToken);
             if (!result)
                 return BadRequest(result);
 
             RemoveRefreshTokenCookie(refreshToken);
+            RemoveUserIdCookie(userId);
+            RemoveUserNameCookie(userName);
             return Ok(new { message = "Successfully logged out" });
         }
 
         [HttpPost("update-user")]
         [Authorize]
-        public async Task<IActionResult> UpdateUserAsync(UpdateUserModel updateUserModel)
+        public async Task<IActionResult> UpdateUserAsync(UpdateUserDTO updateUserDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var result = await _authService.UpdateUserAsync(updateUserModel);
+            var result = await _authService.UpdateUserAsync(updateUserDTO);
             return Ok(result);
         }
 
@@ -176,6 +181,28 @@ namespace UserAuthentication.Controllers
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
 
+        private void SetUserIdCookie(string userId)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,    // Set this in production when using HTTPS
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("userID", userId, cookieOptions);
+        }
+
+        private void SetUserNameCookie(string userName)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,    // Set this in production when using HTTPS
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("userName", userName, cookieOptions);
+        }
+
         private void RemoveRefreshTokenCookie(string refreshToken)
         {
             var cookieOptions = new CookieOptions
@@ -186,6 +213,28 @@ namespace UserAuthentication.Controllers
                 SameSite = SameSiteMode.Strict
             };
             Response.Cookies.Append("refreshToken", "", cookieOptions);
+        }
+
+        private void RemoveUserIdCookie(string userId)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,    // Set this in production when using HTTPS
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("userID", "", cookieOptions);
+        }
+
+        private void RemoveUserNameCookie(string userName)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,    // Set this in production when using HTTPS
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("userName", "", cookieOptions);
         }
     }
 }

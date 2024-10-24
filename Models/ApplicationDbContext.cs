@@ -12,17 +12,17 @@ namespace UserAuthentication.Models
         {
 
         }
-
+        public DbSet<TaskItem> TaskItems { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            //seedRoles(builder);
-            //addAdmin(builder);
+            seedRoles(builder);
+            addAdmin(builder);
             builder.Entity<IdentityUserRole<string>>().HasData(
                 new IdentityUserRole<string>
                 {
-                    UserId = "65fe8fe3-9e08-418b-9d15-a7fa2853b2a5", // Admin user ID
-                    RoleId = "cdeb4fb0-2c1a-45d8-b768-bd517baf4d95"  // Admin role ID
+                    UserId = "f7f134cd-0c6c-46f8-80bf-dab0a7820b4c", // Admin user ID
+                    RoleId = "04ac9c2b-5219-4a4f-9466-cd367d18cbf5"  // Admin role ID
                 }
             );
         }

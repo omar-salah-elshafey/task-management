@@ -52,7 +52,8 @@ namespace UserAuthentication.Services
                 FirstName = registerUser.FirstName,
                 LastName = registerUser.LastName,
                 UserName = registerUser.UserName,
-                Email = registerUser.Email
+                Email = registerUser.Email,
+                PhoneNumber = registerUser.PhoneNumber,
             };
             var result = await _userManager.CreateAsync(user, registerUser.Password);
             if (!result.Succeeded)
@@ -81,7 +82,6 @@ namespace UserAuthentication.Services
             return new AuthModel
             {
                 Email = user.Email,
-                IsAuthenticated = true,
                 Username = user.UserName,
                 Message = "A verification code has been sent to your Email.\n Verify Your Email to be able to login :) "
             };
@@ -109,7 +109,8 @@ namespace UserAuthentication.Services
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             authModel.Username = user.UserName;
             authModel.IsConfirmed = true;
-
+            user.IsActive = true;
+            await _userManager.UpdateAsync(user);
             //checj if the user already has an active refresh token
             if (user.RefreshTokens.Any(t => t.IsActive))
             {
@@ -122,6 +123,7 @@ namespace UserAuthentication.Services
                 // Generate a new refresh token and add it to the user's tokens
                 var refreshToken = await _tokenService.GenerateRefreshToken();
                 user.RefreshTokens.Add(refreshToken);
+                
                 await _userManager.UpdateAsync(user);
 
                 // Send the refresh token along with the JWT token
@@ -227,23 +229,24 @@ namespace UserAuthentication.Services
             return true;
         }
 
-        public async Task<UpdateUserModel> UpdateUserAsync(UpdateUserModel updateUserModel)
+        public async Task<UpdateUserModel> UpdateUserAsync(UpdateUserDTO updateUserDTO)
         {
-            if (string.IsNullOrEmpty(updateUserModel.UserName) 
-                || string.IsNullOrEmpty(updateUserModel.FirstName) || string.IsNullOrEmpty(updateUserModel.LastName))
+            if (string.IsNullOrEmpty(updateUserDTO.UserName) 
+                || string.IsNullOrEmpty(updateUserDTO.FirstName) || string.IsNullOrEmpty(updateUserDTO.LastName))
                 return new UpdateUserModel { Message = "UserName, FirstName, and LastName are required!" };
-            var user = await _userManager.FindByNameAsync(updateUserModel.UserName);
+            var user = await _userManager.FindByNameAsync(updateUserDTO.UserName);
             if (user is null)
-                return new UpdateUserModel { Message = $"User with UserName: {updateUserModel.UserName} isn't found!" };
-            user.UserName = updateUserModel.UserName;
-            user.FirstName = updateUserModel.FirstName;
-            user.LastName = updateUserModel.LastName;
+                return new UpdateUserModel { Message = $"User with UserName: {updateUserDTO.UserName} isn't found!" };
+            user.UserName = updateUserDTO.UserName;
+            user.FirstName = updateUserDTO.FirstName;
+            user.LastName = updateUserDTO.LastName;
+            user.ProfileImageUrl = updateUserDTO.ProfileImageUrl;
             await _userManager.UpdateAsync(user);
             return new UpdateUserModel
             {
-                UserName = updateUserModel.UserName,
-                FirstName = updateUserModel.FirstName,
-                LastName = updateUserModel.LastName,
+                UserName = updateUserDTO.UserName,
+                FirstName = updateUserDTO.FirstName,
+                LastName = updateUserDTO.LastName,
                 Message = "User has been Updated successfully."
             };
         }

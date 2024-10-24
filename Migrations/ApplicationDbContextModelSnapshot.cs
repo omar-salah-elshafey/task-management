@@ -47,6 +47,22 @@ namespace UserAuthentication.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a79e07a5-2376-4b15-a556-6baf438575a7",
+                            ConcurrencyStamp = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "bb51b305-bca7-423c-a649-470d15a2a1b7",
+                            ConcurrencyStamp = "2",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -138,8 +154,8 @@ namespace UserAuthentication.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "65fe8fe3-9e08-418b-9d15-a7fa2853b2a5",
-                            RoleId = "cdeb4fb0-2c1a-45d8-b768-bd517baf4d95"
+                            UserId = "f7f134cd-0c6c-46f8-80bf-dab0a7820b4c",
+                            RoleId = "04ac9c2b-5219-4a4f-9466-cd367d18cbf5"
                         });
                 });
 
@@ -162,6 +178,54 @@ namespace UserAuthentication.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("UserAuthentication.Models.TaskItem", b =>
+                {
+                    b.Property<int>("TaskID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskID"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("TaskID");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("TaskItems");
+                });
+
             modelBuilder.Entity("UserAuthenticationApp.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -174,6 +238,9 @@ namespace UserAuthentication.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -185,6 +252,9 @@ namespace UserAuthentication.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -214,6 +284,9 @@ namespace UserAuthentication.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfileImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -235,6 +308,28 @@ namespace UserAuthentication.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "ffaca596-8093-43f7-ba45-fc6a0341bc4e",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f817c62d-703c-4f6e-8405-0068103cb5ee",
+                            DateCreated = new DateTime(2024, 10, 24, 23, 33, 45, 143, DateTimeKind.Local).AddTicks(4930),
+                            Email = "omarsalah@test.com",
+                            EmailConfirmed = true,
+                            FirstName = "Omar",
+                            IsActive = false,
+                            LastName = "Salah",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "OMARSALAH@TEST.COM",
+                            NormalizedUserName = "OMAR_SALAH",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC4eJBG/RAY0X4pdxG9oA22Kdul7VC4Yodvfc667+DLqnOl/BUoAuuSCUY3sMRempA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8251bed3-c764-46c6-b5eb-6c5875f00aaf",
+                            TwoFactorEnabled = false,
+                            UserName = "omar_salah"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -288,6 +383,15 @@ namespace UserAuthentication.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UserAuthentication.Models.TaskItem", b =>
+                {
+                    b.HasOne("UserAuthenticationApp.Models.ApplicationUser", null)
+                        .WithMany("TaskItems")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("UserAuthenticationApp.Models.ApplicationUser", b =>
                 {
                     b.OwnsMany("UserAuthenticationApp.Models.RefreshToken", "RefreshTokens", b1 =>
@@ -323,6 +427,11 @@ namespace UserAuthentication.Migrations
                         });
 
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("UserAuthenticationApp.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("TaskItems");
                 });
 #pragma warning restore 612, 618
         }
